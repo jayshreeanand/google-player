@@ -1,0 +1,4 @@
+
+reviews = gp.reviews('com.aor.pocketgit', page: 0)
+
+reviews.each do |review|; p "#{review.title}--#{review.tex}--#{review.user}"; end

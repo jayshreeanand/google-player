@@ -26,7 +26,7 @@ class GooglePlay
 
     def parse_review(html)
       doc = Nokogiri.HTML(html)
-      doc.xpath("//div[@class='single-review']").map do |node|
+      doc.css('.single-review').map do |node|
         GooglePlay::Review.new(
           :id      => parse_review_id(node),
           :user    => parse_review_user(node),
@@ -46,8 +46,13 @@ class GooglePlay
     end
 
     def parse_review_user(node)
-      a = node.xpath(".//span[@class='author-name']/a").first
-      a.nil? ? '' : a.text
+      # a = node.xpath(".//span[@class='author-name']/a").first
+      # a.nil? ? '' : a.text
+      if node.at_css('.author-name')
+        node.at_css('.author-name').text.strip
+      else
+        'Unknown'
+      end
     end
 
     def parse_review_user_id(node)
@@ -72,14 +77,25 @@ class GooglePlay
     end
 
     def parse_review_title(node)
-      node.xpath(".//span[@class='review-title']").text
+      # node.xpath(".//span[@class='review-title']").text
+      if node.at_css('.review-title')
+        node.at_css('.review-title').text.strip
+      else
+        ''
+      end
     end
 
     def parse_review_text(node)
-      dup = node.dup
-      dup.xpath(".//div[@class='review-link']").remove
-      dup.xpath(".//span[@class='review-title']").remove
-      dup.xpath(".//div[@class='review-body']").text.strip
+      # dup = node.dup
+      # dup.xpath(".//div[@class='review-link']").remove
+      # dup.xpath(".//span[@class='review-title']").remove
+      # dup.xpath(".//div[@class='review-body']").text.strip
+
+      if node.at_css('.review-body')
+        node.at_css('.review-body').text.strip
+      else
+        ''
+      end
     end
 
     def parse_app_name(node)
